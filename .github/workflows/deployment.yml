@@ -114,4 +114,6 @@ jobs:
         run: curl $PING_SOME_SERVER
       - name: ping other server
         run: curl $SOME_OTHER_SERVER
+      - name: other syntax
+        run: curl ${{env.SOME_OTHER_SERVER}}
 # test
