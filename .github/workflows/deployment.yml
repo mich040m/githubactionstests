@@ -66,12 +66,18 @@ jobs:
         run: npm run build
       - name: upload artifact
         uses: actions/upload-artifact@v3
-        with: 
+        with:
           name: next-build
           path: .next
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: Get build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: .next
+      - name: output contents
+        run: ls
       - name: info
         run: echo "deploying..."
 # test
