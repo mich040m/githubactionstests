@@ -67,7 +67,7 @@ jobs:
       - name: upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: next-build
+          name: .next
           path: .next
   deploy:
     needs: build
