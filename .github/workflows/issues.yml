@@ -1,0 +1,11 @@
+name: issues listiner
+
+on: [issues]
+
+jobs:
+  details:
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    steps:
+      - name: print issue info
+        run: echo"${{ github }}"

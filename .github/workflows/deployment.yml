@@ -23,6 +23,12 @@ jobs:
         with:
           name: playwright-report
           path: playwright-report
+  lint:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    steps:
+      - name: Start linting
+        run: npm run lint
   deploy:
     runs-on: ubuntu-latest
     steps:
