@@ -27,6 +27,10 @@ jobs:
     timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
+      - name: checkout code
+        run: actions/checkout@v3
+      - name: install deps
+        run: npm ci
       - name: Start linting
         run: npm run lint
   deploy:

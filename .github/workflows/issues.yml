@@ -8,4 +8,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: print issue info
-        run: echo"${{ github }}"
+        run: echo "${{ toJson(github) }}"
