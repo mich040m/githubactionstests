@@ -16,6 +16,9 @@ on:
       - synchronize
       - reopened
 
+env:
+  PING_SOME_SERVER: https://www.google.com
+
 jobs:
   test:
     timeout-minutes: 10
@@ -103,4 +106,12 @@ jobs:
         run: echo "${{ needs.build.outputs.script-file}}"
       - name: info
         run: echo "deploying..."
-# test 
+  ping-some-server:
+    env: { SOME_OTHER_SERVER: https://old.reddit.com/ }
+    runs-on: ubuntu-latest
+    steps:
+      - name: ping
+        run: curl $PING_SOME_SERVER
+      - name: ping other server
+        run: curl $SOME_OTHER_SERVER
+# test
