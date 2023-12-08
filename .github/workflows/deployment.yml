@@ -75,7 +75,7 @@ jobs:
       - name: cache deps
         uses: actions/cache@v3
         with:
-          path: ~/.npm
+          path: "**/node_modules"
           key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: install deps
         run: npm ci
