@@ -54,7 +54,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     outputs:
-      script-file: ${{ steps.find-js.main-file }}
+      script-file: ${{ steps.find-js.outputs.main-file }}
     steps:
       - name: get code
         uses: actions/checkout@v3
