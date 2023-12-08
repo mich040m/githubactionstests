@@ -53,6 +53,8 @@ jobs:
         run: npm run lint
   build:
     runs-on: ubuntu-latest
+    outputs:
+      script-file: ${{ steps.find-js.main-file }}
     steps:
       - name: get code
         uses: actions/checkout@v3
@@ -64,6 +66,9 @@ jobs:
         run: npm ci
       - name: build
         run: npm run build
+      - name: find some js file for some reason
+        id: find-js
+        run: find .next/static/chunks/main-*.js -type f -execdir echo 'main-file={}' >> $GITHUB_OUTPUT ';'
       - name: upload artifact
         uses: actions/upload-artifact@v3
         with:
@@ -79,6 +84,8 @@ jobs:
           name: .next
       - name: output contents
         run: ls
+      - name: output main file from build
+        run: echo "${{ needs.build.outputs.script-file}}"
       - name: info
         run: echo "deploying..."
 # test
