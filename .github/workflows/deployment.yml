@@ -1,4 +1,4 @@
-name: qa tests
+name: deploy project
 
 on: push
 
@@ -23,3 +23,18 @@ jobs:
         with:
           name: playwright-report
           path: playwright-report
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: get code
+        uses: actions/checkout@v3
+      - name: install node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: install deps
+        run: npm ci
+      - name: build
+        run: npm run build
+      - name: deploy
+        run: echo "deploying"
