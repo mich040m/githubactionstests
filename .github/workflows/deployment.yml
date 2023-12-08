@@ -107,7 +107,8 @@ jobs:
       - name: info
         run: echo "deploying..."
   ping-some-server:
-    env: { SOME_OTHER_SERVER: https://old.reddit.com/ }
+    env: 
+      SOME_OTHER_SERVER: https://old.reddit.com/
     runs-on: ubuntu-latest
     steps:
       - name: ping
