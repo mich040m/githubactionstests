@@ -1,17 +1,17 @@
 name: deploy project
 
-on: 
+on:
   push:
-    branches: 
+    branches:
       - main
       - dev-*
       - feature/**
-    paths-ignore: 
+    paths-ignore:
       - .gitignore
       - public/**
   workflow_dispatch:
   pull_request:
-    types: 
+    types:
       - opened
       - synchronize
       - reopened
@@ -51,7 +51,7 @@ jobs:
         run: npm ci
       - name: Start linting
         run: npm run lint
-  deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: get code
@@ -64,6 +64,14 @@ jobs:
         run: npm ci
       - name: build
         run: npm run build
-      - name: deploy
-        run: echo "deploying"
+      - name: upload artifact
+        uses: actions/upload-artifact@v3
+        with: 
+          name: next-build
+          path: .next
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: info
+        run: echo "deploying..."
 # test
