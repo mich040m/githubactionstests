@@ -107,7 +107,7 @@ jobs:
       - name: info
         run: echo "deploying..."
   ping-some-server:
-    env: 
+    env:
       SOME_OTHER_SERVER: https://old.reddit.com/
     runs-on: ubuntu-latest
     steps:
@@ -117,4 +117,6 @@ jobs:
         run: curl $SOME_OTHER_SERVER
       - name: other syntax
         run: curl ${{env.SOME_OTHER_SERVER}}
+      - name: print some secret
+        run: echo "${{secrets.SOME_SECRET}}"
 # test
