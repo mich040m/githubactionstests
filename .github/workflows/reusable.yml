@@ -1,5 +1,11 @@
 name: Reusable deploy
-on: workflow_call
+on:
+  workflow_call:
+    inputs:
+      artifact-name:
+        required: true
+        description: name of the artifact
+        type: string
 
 jobs:
   deploy:
@@ -8,10 +14,9 @@ jobs:
       - name: Get build artifacts
         uses: actions/download-artifact@v3
         with:
-          name: .next
+          name: ${{inputs.artifact-name }}
       - name: output contents
         run: ls
-      - name: output main file from build
-        run: echo "${{ needs.build.outputs.script-file}}"
+
       - name: info
         run: echo "deploying..."
