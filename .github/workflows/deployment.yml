@@ -121,4 +121,13 @@ jobs:
         run: curl ${{env.SOME_OTHER_SERVER}}
       - name: print some secret
         run: echo "${{secrets.SOME_SECRET}}"
+  conditional-jobs:
+    if: failure()
+    runs-on: ubuntu-latest
+    steps:
+      - name: output info
+        run: |
+          echo "Something went wrong"
+          echo "${{ github }}"
+
 # test
