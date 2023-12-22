@@ -71,6 +71,7 @@ jobs:
       - name: Start linting
         run: npm run lint
   build:
+    needs: lint
     runs-on: ubuntu-latest
     outputs:
       script-file: ${{ steps.find-js.outputs.main-file }}
