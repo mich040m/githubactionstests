@@ -6,9 +6,18 @@ on:
         required: true
         description: name of the artifact
         type: string
+    secrets:
+      SSH_PRIVATE_KEY:
+        required: true
+    outputs:
+      result:
+        description: result of the deployment
+        value: ${{ jobs.deploy.outputs.outcome}}
 
 jobs:
   deploy:
+    outputs:
+      outcome: ${{steps.deploy.outputs.result}}
     runs-on: ubuntu-latest
     steps:
       - name: Get build artifacts
@@ -17,6 +26,8 @@ jobs:
           name: ${{inputs.artifact-name }}
       - name: output contents
         run: ls
-
       - name: info
         run: echo "deploying..."
+      - name: set result
+        id: deploy
+        run: echo "result=deployed" >> $GITHUB_OUTPUT

@@ -105,8 +105,10 @@ jobs:
   deploy:
     needs: build
     uses: ./.github/workflows/reusable.yml
-    with: 
+    with:
       artifact-name: .next
+    secrets:
+      SSH_PRIVATE_KEY: ${{ secrets.SOME_SECRET }}
   ping-some-server:
     env:
       SOME_OTHER_SERVER: https://old.reddit.com/
@@ -138,4 +140,10 @@ jobs:
     steps:
       - name: output main file from build
         run: echo "${{ needs.build.outputs.script-file}}"
+  print-workflow-result:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: print workflow result
+        run: echo "${{needs.deploy.outputs.result}}"
 # test
