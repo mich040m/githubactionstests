@@ -122,6 +122,10 @@ jobs:
       - name: print some secret
         run: echo "${{secrets.SOME_SECRET}}"
   conditional-jobs:
+    needs:
+      - test
+      - deploy
+      - build
     if: failure()
     runs-on: ubuntu-latest
     steps:
