@@ -1,0 +1,17 @@
+name: Reusable deploy
+on: workflow_call
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: .next
+      - name: output contents
+        run: ls
+      - name: output main file from build
+        run: echo "${{ needs.build.outputs.script-file}}"
+      - name: info
+        run: echo "deploying..."
