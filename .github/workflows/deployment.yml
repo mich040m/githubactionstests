@@ -59,7 +59,7 @@ jobs:
         with:
           caching: "false"
       - name: Cache used?
-        run: echo "${{ steps.cache-deps.outputs.cache-hit}}"
+        run: echo "cache hit= ${{ steps.cache-deps.outputs.cache-hit}}"
       - name: Start linting
         run: npm run lint
   build:
