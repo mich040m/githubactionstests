@@ -54,9 +54,12 @@ jobs:
         with:
           node-version: 18
       - name: load and cache deps
+        id: cache-deps
         uses: ./.github/actions/cached-deps
         with:
           caching: "false"
+      - name: Cache used?
+        run: echo "${{ steps.cache-deps.outputs.cache-hit}}"
       - name: Start linting
         run: npm run lint
   build:
