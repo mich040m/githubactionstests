@@ -29,15 +29,8 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 18
-      - name: cache deps
-        id: cache
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
-      - name: install deps
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: npm ci
+      - name: load and cache deps
+        uses: ./.github/actions/cached-deps
       - name: install browsers
         run: npx playwright install --with-deps
       - name: run pw tests
@@ -60,15 +53,8 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
-      - name: cache deps
-        id: cache
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
-      - name: install deps
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: npm ci
+      - name: load and cache deps
+        uses: ./.github/actions/cached-deps
       - name: Start linting
         run: npm run lint
   build:
@@ -83,15 +69,8 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
-      - name: cache deps
-        id: cache
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
-      - name: install deps
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: npm ci
+      - name: load and cache deps
+        uses: ./.github/actions/cached-deps
       - name: build
         run: npm run build
       - name: find some js file for some reason
