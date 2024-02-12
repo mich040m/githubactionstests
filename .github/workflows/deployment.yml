@@ -1,13 +1,23 @@
 name: deploy project
 
-on: 
+on:
   push:
+    branches:
+      - main
+      - dev-*
+      - feature/**
+    paths-ignore:
+      - .gitignore
+      - public/**
   workflow_dispatch:
   pull_request:
-    types: 
+    types:
       - opened
       - synchronize
       - reopened
+
+env:
+  PING_SOME_SERVER: https://www.google.com
 
 jobs:
   test:
@@ -19,14 +29,20 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 18
-      - name: install deps
-        run: npm ci
+      - name: load and cache deps
+        id: cache-deps
+        uses: ./.github/actions/cached-deps
+      - name: Cache used?
+        run: echo "cache hit= ${{ steps.cache-deps.outputs.cache-hit}}"
       - name: install browsers
         run: npx playwright install --with-deps
       - name: run pw tests
+        id: run-pw
+        continue-on-error: true
         run: npx playwright test
-      - uses: actions/upload-artifact@v3
-        if: always()
+      - name: upload artifact
+        uses: actions/upload-artifact@v3
+        # if: failure() && steps.run-pw.outcome == 'failure'
         with:
           name: playwright-report
           path: playwright-report
@@ -40,12 +56,20 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
-      - name: install deps
-        run: npm ci
+      - name: load and cache deps
+        id: cache-deps
+        uses: ./.github/actions/cached-deps
+        with:
+          caching: "false"
+      - name: Cache used?
+        run: echo "cache hit= ${{ steps.cache-deps.outputs.cache-hit}}"
       - name: Start linting
         run: npm run lint
-  deploy:
+  build:
+    needs: lint
     runs-on: ubuntu-latest
+    outputs:
+      script-file: ${{ steps.find-js.outputs.main-file }}
     steps:
       - name: get code
         uses: actions/checkout@v3
@@ -53,9 +77,70 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
-      - name: install deps
-        run: npm ci
+      - name: load and cache deps
+        id: cache-deps
+        uses: ./.github/actions/cached-deps
+      - name: Cache used?
+        run: echo "cache hit= ${{ steps.cache-deps.outputs.cache-hit}}"
       - name: build
         run: npm run build
-      - name: deploy
-        run: echo "deploying"
+      - name: find some js file for some reason
+        id: find-js
+        run: find .next/static/chunks/main-*.js -type f -execdir echo 'main-file={}' >> $GITHUB_OUTPUT ';'
+      - name: upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: .next
+          path: .next
+  deploy:
+    needs: build
+    uses: ./.github/workflows/reusable.yml
+    with:
+      artifact-name: .next
+    secrets:
+      SSH_PRIVATE_KEY: ${{ secrets.SOME_SECRET }}
+  ping-some-server:
+    env:
+      SOME_OTHER_SERVER: https://old.reddit.com/
+    runs-on: ubuntu-latest
+    steps:
+      - name: ping
+        run: curl $PING_SOME_SERVER
+      - name: ping other server
+        run: curl $SOME_OTHER_SERVER
+      - name: other syntax
+        run: curl ${{env.SOME_OTHER_SERVER}}
+      - name: print some secret
+        run: echo "${{secrets.SOME_SECRET}}"
+  conditional-jobs:
+    needs:
+      - test
+      - deploy
+      - build
+    if: failure()
+    runs-on: ubuntu-latest
+    steps:
+      - name: output info
+        run: |
+          echo "Something went wrong"
+          echo "${{ github }}"
+  needs-job:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: output main file from build
+        run: echo "${{ needs.build.outputs.script-file}}"
+  print-workflow-result:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: print workflow result
+        run: echo "${{needs.deploy.outputs.result}}"
+  js-actions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: get code
+        uses: actions/checkout@v3
+      - name: deploy or smh
+        uses: ./.github/actions/deploy-s3-js/
+# test
