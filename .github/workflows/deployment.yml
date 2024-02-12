@@ -136,4 +136,11 @@ jobs:
     steps:
       - name: print workflow result
         run: echo "${{needs.deploy.outputs.result}}"
+  js-actions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: get code
+        uses: actions/checkout@v3
+      - name: deploy or smh
+        uses: ./.github/actions/deploy-s3-js/
 # test
