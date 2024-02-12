@@ -55,6 +55,8 @@ jobs:
           node-version: 18
       - name: load and cache deps
         uses: ./.github/actions/cached-deps
+        with:
+          caching: "false"
       - name: Start linting
         run: npm run lint
   build:
