@@ -30,7 +30,10 @@ jobs:
         with:
           node-version: 18
       - name: load and cache deps
+        id: cache-deps
         uses: ./.github/actions/cached-deps
+      - name: Cache used?
+        run: echo "cache hit= ${{ steps.cache-deps.outputs.cache-hit}}"
       - name: install browsers
         run: npx playwright install --with-deps
       - name: run pw tests
@@ -75,7 +78,10 @@ jobs:
         with:
           node-version: 18
       - name: load and cache deps
+        id: cache-deps
         uses: ./.github/actions/cached-deps
+      - name: Cache used?
+        run: echo "cache hit= ${{ steps.cache-deps.outputs.cache-hit}}"
       - name: build
         run: npm run build
       - name: find some js file for some reason
